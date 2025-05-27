@@ -1,0 +1,4 @@
+#ifndef SHOPPINGCART_H
+#define SHOPPINGCART_H
+
+#endif // SHOPPINGCART_H
