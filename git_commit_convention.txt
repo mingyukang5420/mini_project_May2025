@@ -1,0 +1,45 @@
+  Fix : 버그 수정
+  Fix my test
+  Fix typo in style.css
+  Fix my test to return undefined
+  Fix error when using my function
+
+  Feat : 새로운 기능 추가
+  Feat: Summarize changes in around 50 characters or less
+  Feat: 회원 가입 기능 구현
+
+  Update : Fix와 달리 원래 정상적으로 동작했지만 보완의 개념
+  Update harry-server.js to use HTTPS
+
+  Add
+  Add documentation for the defaultPort option
+  Add example for setting Vary: Accept-Encoding header in zlib.md
+
+  Remove(Clean이나 Eliminate) : ‘unnecessary’, ‘useless’, ‘unneeded’, ‘unused’, ‘duplicated’가 붙는 경우가 많음
+  Remove fallback cache
+  Remove unnecessary italics from child_process.md
+
+  Refactor : 리팩토링
+
+  Simplify : Refactor와 유사하지만 약한 수정, 코드 단순화
+
+  Improve : 호환성, 테스트 커버리지, 성능, 검증 기능, 접근성 등의 향상
+  Improve iOS's accessibilityLabel performance by up to 20%
+
+  Implement : 코드 추가보다 큰 단위의 구현
+  Implement bundle sync status
+
+  Correct : 주로 문법의 오류나 타입의 변경, 이름 변경 등에 사용
+  Correct grammatical error in BUILDING.md
+
+  Prevent
+  Prevent hello handler from saying Hi in hi.js
+
+  Avoid : Prevent는 못하게 막지만, Avoid는 회피(if 등)
+  Avoid flusing uninitialized traces
+
+  Move : 코드나 파일의 이동
+  Move function from header to source file
+
+  Rename : 이름 변경
+  Rename node-report to report
