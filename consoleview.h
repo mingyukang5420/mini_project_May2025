@@ -7,18 +7,18 @@ class ConsoleView {
 public:
   ConsoleView();
   ~ConsoleView();
-  void displayAdminInfo();
   bool displayAdminMenu();
+  bool displayAdminInfo();
   bool displayAccountRegisterMenu();
-  void displayCartInfo();
   bool displayCartMenu();
-  void displayCustomerInfo();
+  void displayCartInfo();
   bool displayCustomerMenu();
+  void displayCustomerInfo();
   bool displayMainMenu();
-  void displayPlaysInfo();
   bool displayPlaysMenu();
-  void displayReservedInfo();
+  void displayPlaysInfo();
   bool displayReservedMenu();
+  void displayReservedInfo();
   bool displayUserMenu();
 };
 #endif // CONSOLEVIEW_H

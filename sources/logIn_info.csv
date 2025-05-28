@@ -1,0 +1,11 @@
+userType,userLogInId,password,userName,uId
+admin,admin01,pass_admin01,JohnDoe,a01
+admin,admin02,pass_admin02,JaneSmith,a02
+admin,admin03,pass_admin03,PeterJones,a03
+admin,admin04,pass_admin04,MaryBrown,a04
+admin,admin05,pass_admin05,RobertDavis,a05
+admin,admin06,pass_admin06,LindaMiller,a06
+admin,admin07,pass_admin07,MichaelWilson,a07
+admin,admin08,pass_admin08,SarahMoore,a08
+admin,admin09,pass_admin09,DavidTaylor,a09
+admin,admin10,pass_admin10,JessicaWhite,a10

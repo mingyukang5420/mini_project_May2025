@@ -10,7 +10,7 @@ public:
   void addCustomer();
   bool checkDuplicateCustomer(const string &name);
   void removeCustomer(int, const User *);
-  void modifyCustomer(int);
+  void modifyCustomer(int, const User *);
   void quitCustomer(int, const User *);
   void viewCustomer(int, User *);
   int makeCustomerId();

@@ -12,9 +12,9 @@ public:
   ~ShoppingCartManager();
 
   void addCart();
-  void cancelCart();
-  void removeCart();
-  void modifyCart();
+  void cancelCart(int customerId);
+  void removeCart(int customerId);
+  void modifyCart(int customerId);
   void viewCart(ShoppingCart *cart);
   ShoppingCart *searchCart(int customerId);
   void pay(Customer *customer);
