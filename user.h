@@ -10,6 +10,9 @@ public:
   User(string userLoginId, string = "", string = "", string = "", string = "",
        string = "");
 
+  User();
+  ~User();
+
   bool verifyLogin(string userLoginId, string password);
 
 private:

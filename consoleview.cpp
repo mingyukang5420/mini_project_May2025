@@ -5,9 +5,11 @@
 #include "playsmanager.h"
 #include "reservedmanager.h"
 #include "shoppingcartmanager.h"
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace std;
@@ -61,7 +63,7 @@ bool ConsoleView::displayCartMenu() {
   cout << "|2. Cancel Cart                             |" << endl;
   cout << "|3. Remove Cart                             |" << endl;
   cout << "|4. Modify Cart                             |" << endl;
-  cout << "|5. View Cart                               |" << endl;
+  cout << "|5. View My Cart                            |" << endl;
   cout << "|6. Search Cart                             |" << endl;
   cout << "|7. Pay Cart                                |" << endl;
   cout << "|                                           |" << endl;
@@ -315,7 +317,7 @@ bool ConsoleView::displayAccountRegisterMenu() {
   cout << "|   or exit this program                    |" << endl;
   cout << "|                                           |" << endl;
   cout << "|                                           |" << endl;
-  cout << "|9. Back to Default Menu                    |" << endl;
+  cout << "|9. Back to previous Menu                   |" << endl;
   cout << "|0. Quit this program                       |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cin >> ch;
@@ -335,81 +337,277 @@ bool ConsoleView::displayAccountRegisterMenu() {
   return true;
 }
 
-bool ConsoleView::displayUserMenu() {
+bool ConsoleView::displayInnerUserMenu() {
   int ch;
   cout << "\033[2J\033[1;1H";
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|                User Menu                  |" << endl;
   cout << "|                                           |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "|1. View User Info                          |" << endl;
-  cout << "|2. Goto Cart Menu                          |" << endl;
-  cout << "|3. Goto Customer Menu                      |" << endl;
-  cout << "|4. Goto Play Menu                          |" << endl;
-  cout << "|5. Goto Reserved Menu                      |" << endl;
+  cout << "|1. Goto Cart Menu                          |" << endl;
+  cout << "|2. Goto Personal Menu                      |" << endl;
+  cout << "|3. Goto Plays Menu                         |" << endl;
+  cout << "|4. Goto Reserved Menu                      |" << endl;
+  cout << "|5. Logout                                  |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "|0. Quit this program                       |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cin >> ch;
+  switch (ch) {
+  default:
+    this->displayInnerUserMenu();
+    cin.ignore();
+    getchar();
+    break;
+  case 1:
+    displayCartMenu();
+    cin.ignore();
+    getchar();
+    break;
+  case 2:
+    displayCustomerMenu();
+    break;
+  case 3:
+    displayPlaysMenu();
+    break;
+  case 4:
+    displayReservedMenu();
+    break;
+  case 5:
+    displayMainMenu();
+    break;
+  case 0:
+    return false;
+  }
+  return true;
+}
+
+bool ConsoleView::displayOuterUserMenu() {
+  User user;
+  string id;
+  string password;
+  string userResponse;
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                User Menu                  |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                                           |" << endl;
+  cout << "| - Enter your Id and Password to sign in   |" << endl;
   cout << "|                                           |" << endl;
   cout << "|                                           |" << endl;
   cout << "|9. Back to Default Menu                    |" << endl;
   cout << "|0. Quit this program                       |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cin >> ch;
-  switch (ch) {
-  case 1:
-    this->displayUserInfo();
-    break;
-  case 2:
-    this->displayCartMenu();
-    break;
+  cout << "| ID :                                      |" << endl;
+  cin >> id;
+  cout << "| Entered Your ID : " << id << setw(22 - id.length()) << "|" << endl;
+  cout << "| Password :                                |" << endl;
+  cin >> password;
+  cout << "| Entered Your Password : " << password
+       << setw(22 - password.length()) << "|" << endl;
+  if (user.verifyLogin(id, password)) {
+    cout << "| Sign in successfully!                     |" << endl;
+    cout << "|                                           |" << endl;
+    cout << "|                                           |" << endl;
+    cout << "| a few seconds to move next Menu           |" << endl;
+
+    do {
+      // Countdown loop from 3 to 1
+      for (int i = 3; i > 0; --i) {
+        // Printing the remaining seconds
+        cout << "\033[2J\033[1;1H";
+        cout << "| " << i << " seconds remaining" << setw(27) << "|" << endl;
+        // Waiting for 1 second
+        this_thread::sleep_for(chrono::seconds(1));
+      }
+      // Printing the final message
+      cout << "\033[2J\033[1;1H";
+      cout << "Press any key to move next Menu" << endl;
+      cin >> userResponse;
+    } while (userResponse.empty());
+    this->displayInnerUserMenu();
   }
-  bool ConsoleView::displayAdminInfo() {
-    const int ID_WIDTH = 10;
-    const int NAME_WIDTH = 15;
-    const int PW_WIDTH = 15;
-    const int TOTAL_WIDTH = ID_WIDTH + NAME_WIDTH + PW_WIDTH +
-                            10; // 10은 구분자와 여백을 위한 추가 공간
 
-    cout << "\033[2J\033[1;1H";
-    cout << string(TOTAL_WIDTH, '+') << endl;
+  else {
+    cout << "| Wrong ID or Password                      |" << endl;
+    cout << "| Please try again                          |" << endl;
+    cout << "|                                           |" << endl;
+    cout << "|                                           |" << endl;
+    cout << "|                                           |" << endl;
+    cout << "|                                           |" << endl;
+    this->displayOuterUserMenu();
+  }
+  return true;
+}
 
-    cout << "|" << setw((TOTAL_WIDTH - 2) / 2) << "Admin Info"
-         << setw((TOTAL_WIDTH - 2) / 2) << "|" << endl;
+// using setw() to align the messages
+void ConsoleView::displayAdminInfo() {
+  const int ID_WIDTH = 10;
+  const int NAME_WIDTH = 15;
+  const int PW_WIDTH = 15;
+  const int TOTAL_WIDTH = ID_WIDTH + NAME_WIDTH + PW_WIDTH +
+                          10; // 10은 구분자와 여백을 위한 추가 공간
 
-    cout << "|" << setw(TOTAL_WIDTH - 2) << "These are the admin's information"
-         << "|" << endl;
+  cout << "\033[2J\033[1;1H";
+  cout << string(TOTAL_WIDTH, '+') << endl;
 
-    cout << "|" << setw(TOTAL_WIDTH - 2) << " " << "|" << endl;
+  cout << "|" << setw((TOTAL_WIDTH - 2) / 2) << "Admin Info"
+       << setw((TOTAL_WIDTH - 2) / 2) << "|" << endl;
 
-    cout << "|" << setw(TOTAL_WIDTH - 2) << "CAUTION: It's SECRET information"
-         << "|" << endl;
+  cout << "|" << setw(TOTAL_WIDTH - 2) << "These are the admin's information"
+       << "|" << endl;
 
-    cout << "|" << setw(TOTAL_WIDTH - 2) << "be careful not to show" << "|"
+  cout << "|" << setw(TOTAL_WIDTH - 2) << " " << "|" << endl;
+
+  cout << "|" << setw(TOTAL_WIDTH - 2) << "CAUTION: It's SECRET information"
+       << "|" << endl;
+
+  cout << "|" << setw(TOTAL_WIDTH - 2) << "be careful not to show" << "|"
+       << endl;
+
+  cout << "|" << setw(TOTAL_WIDTH - 2) << " " << "|" << endl;
+
+  cout << string(TOTAL_WIDTH, '+') << endl;
+
+  FileHandler fileHandler;
+  vector<vector<string>> admin = fileHandler.readCsv("./sources/admin.csv");
+
+  // 헤더 출력
+  cout << "|" << setfill(' ') << setw((ID_WIDTH - 2) / 2) << " " << "ID"
+       << setw((ID_WIDTH - 2) / 2) << " " << "|" << setw(NAME_WIDTH) << left
+       << "Name" << "|" << setw(PW_WIDTH) << right << "Password" << "|" << endl;
+  cout << string(TOTAL_WIDTH, '+') << endl;
+
+  // 데이터 출력
+  for (const auto &row : admin) {
+    // ID 가운데 정렬
+    string id = row[0];
+    int padding = (ID_WIDTH - id.length()) / 2;
+    cout << "|" << setfill(' ') << setw(padding) << " " << id
+         << setw(ID_WIDTH - padding - id.length()) << " " << "|"
+         << setw(NAME_WIDTH) << left << row[1] << "|" // Name 왼쪽 정렬
+         << setw(PW_WIDTH) << right << row[2] << "|"
+         << endl; // Password 오른쪽 정렬
+  }
+  cout << string(TOTAL_WIDTH, '+') << endl;
+}
+
+// messages to be alligned center
+// Information could be filled with specific customer's cart
+// using setw() to align the messages
+void ConsoleView::displayCartInfo(ShoppingCart *cart) {
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                Cart Info                  |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                                           |" << endl;
+  cout << "| Plays Name :                              |" << endl;
+  cout << "| Plays Location :                          |" << endl;
+  cout << "| Plays Date :                              |" << endl;
+  cout << "| Plays Time :                              |" << endl;
+  cout << "| Quantity :                                |" << endl;
+  cout << "| Total Price :                             |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+}
+
+void ConsoleView::displayCustomerInfo(Customer *customer) {
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                Customer Info              |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                                           |" << endl;
+  cout << "| Name :                                    |" << endl;
+  cout << "| Address :                                 |" << endl;
+  cout << "| Credit Card Info :                        |" << endl;
+  cout << "| Account Balance :                         |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+}
+
+void ConsoleView::displayReservedInfo(Reserved *reserved) {
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                Reserved Info              |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                                           |" << endl;
+  cout << "| Play Name :                               |" << endl;
+  cout << "| Play Location :                           |" << endl;
+  cout << "| Play Date :                               |" << endl;
+  cout << "| Play Time :                               |" << endl;
+  cout << "| Seat Number :                             |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+}
+
+// using setw() to align the messages
+// currentPage is the current page number
+// playsList is the list of plays
+// it is not finished yet
+// trying to understand the code when all the functions are implemented
+void ConsoleView::displayPlaysInfo(const vector<Plays *> &playsList,
+                                   int currentPage) {
+  const int PLAYS_PER_PAGE = 4;
+  const int totalPlays = playsList.size();
+  const int totalPages = (totalPlays + PLAYS_PER_PAGE - 1) / PLAYS_PER_PAGE;
+
+  if (currentPage < 1)
+    currentPage = 1;
+  if (currentPage > totalPages)
+    currentPage = totalPages;
+
+  int startIdx = (currentPage - 1) * PLAYS_PER_PAGE;
+  int endIdx = min(startIdx + PLAYS_PER_PAGE, totalPlays);
+
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                Plays List                  |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+
+  for (int i = startIdx; i < endIdx; i++) {
+    Plays *play = playsList[i];
+    cout << "|-------------------------------------------|" << endl;
+    cout << "| Play ID: " << setw(33) << left << play->getId() << "|" << endl;
+    cout << "| Name: " << setw(35) << left << play->getName() << "|" << endl;
+    cout << "| Location: " << setw(32) << left << play->getLocation() << "|"
          << endl;
+    cout << "| Date: " << setw(35) << left << play->getDate() << "|" << endl;
+    cout << "| Time: " << setw(35) << left << play->getTime() << "|" << endl;
+    cout << "|-------------------------------------------|" << endl;
+  }
 
-    cout << "|" << setw(TOTAL_WIDTH - 2) << " " << "|" << endl;
+  cout << "|                                           |" << endl;
+  cout << "| Page " << currentPage << " of " << totalPages;
+  cout << setw(28) << right << "|" << endl;
+  cout << "| [P]rev  [N]ext  [B]ack to Menu           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
 
-    cout << string(TOTAL_WIDTH, '+') << endl;
+  char choice;
+  cout << "Enter your choice: ";
+  cin >> choice;
 
-    FileHandler fileHandler;
-    vector<vector<string>> admin = fileHandler.readCsv("./sources/admin.csv");
-
-    // 헤더 출력
-    cout << "|" << setfill(' ') << setw((ID_WIDTH - 2) / 2) << " " << "ID"
-         << setw((ID_WIDTH - 2) / 2) << " " << "|" << setw(NAME_WIDTH) << left
-         << "Name" << "|" << setw(PW_WIDTH) << right << "Password" << "|"
-         << endl;
-    cout << string(TOTAL_WIDTH, '+') << endl;
-
-    // 데이터 출력
-    for (const auto &row : admin) {
-      // ID 가운데 정렬
-      string id = row[0];
-      int padding = (ID_WIDTH - id.length()) / 2;
-      cout << "|" << setfill(' ') << setw(padding) << " " << id
-           << setw(ID_WIDTH - padding - id.length()) << " " << "|"
-           << setw(NAME_WIDTH) << left << row[1] << "|" // Name 왼쪽 정렬
-           << setw(PW_WIDTH) << right << row[2] << "|"
-           << endl; // Password 오른쪽 정렬
+  switch (tolower(choice)) {
+  case 'p':
+    if (currentPage > 1) {
+      displayPlaysInfo(playsList, currentPage - 1);
     }
-    cout << string(TOTAL_WIDTH, '+') << endl;
-    return true;
+    break;
+  case 'n':
+    if (currentPage < totalPages) {
+      displayPlaysInfo(playsList, currentPage + 1);
+    }
+    break;
+  case 'b':
+    displayPlaysMenu();
+    return;
+  default:
+    displayPlaysInfo(playsList, currentPage);
+    break;
   }
+}

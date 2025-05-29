@@ -1,17 +1,17 @@
 #ifndef ACCOUNTREGISTER_H
 #define ACCOUNTREGISTER_H
 
-#include "user.h"
+#include <string>
+using namespace std;
 
 class AccountRegister {
 public:
   AccountRegister();
   ~AccountRegister();
-  bool isValidate();
+  bool isValidate(const string &newId);
 
 private:
-  string m_logInId;
-  string m_logInPassword;
+  bool isValidIdFormat(const string &id);
 };
 
 #endif

@@ -2,7 +2,8 @@
 #define SHOPPINGCARTMANAGER_H
 
 #include "customer.h"
-#include "shoppingcart.h"
+#include "playsmanager.h"
+#include "shoppingcart.h  "
 
 // #include "user.h"
 
@@ -18,5 +19,9 @@ public:
   void viewCart(ShoppingCart *cart);
   ShoppingCart *searchCart(int customerId);
   void pay(Customer *customer);
+
+private:
+  map<int, ShoppingCart *> shoppingCartManager;
+  PlaysManager *playsManager;
 };
 #endif // SHOPPINGCARTMANAGER_H

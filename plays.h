@@ -9,16 +9,16 @@ class Plays {
 public:
   Plays();
   ~Plays();
-  void getPlaysId();
-  string getPlaysName();
-  time_t getPlaysDate();
-  time_t getPlaysTime();
-  string getPlaysLocation();
-  int getPlaysPrice();
-  string getPlaysGenre();
-  float getPlaysReviewScore();
-  vector<string> getPlaysCast();
-  int getPlaysRunningTime();
+  int getId() const { return m_playsId; }
+  string getName() const { return m_playsName; }
+  string getLocation() const { return m_playsLocation; }
+  string getDate() const; // time_t를 string으로 변환하여 반환
+  string getTime() const; // time_t를 string으로 변환하여 반환
+  int getPrice() const { return m_playsPrice; }
+  string getGenre() const { return m_playsGenre; }
+  float getReviewScore() const { return m_playsReviewScore; }
+  const vector<string> &getCast() const { return m_playsCast; }
+  int getRunningTime() const { return m_playsRunningTime; }
 
 private:
   int m_playsId;
