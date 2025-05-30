@@ -1,26 +1,31 @@
 #ifndef USER_H
 #define USER_H
 
-#include <iostream>
-
+#include <string>
 using namespace std;
 
 class User {
-public:
-  User(string userLoginId, string = "", string = "", string = "", string = "",
-       string = "");
-
-  User();
-  ~User();
-
-  bool verifyLogin(string userLoginId, string password);
-
 private:
-  string m_userLoginId;
-  string m_password;
-  string m_loginStatus;
-  string m_userType;
-  string m_registerDate;
+  string userLoginId; // login ID (example: "c001", "a01")
+  string password;    // password
+  string userType;    // "admin" or "customer"
+
+public:
+  User();
+  virtual ~User();
+
+  // Getters
+  string getUserLoginId() const { return userLoginId; }
+  string getUserType() const { return userType; }
+
+  // Setters
+  void setUserLoginId(const string &id);
+  void setPassword(const string &pw);
+  void setUserType(const string &type);
+
+  // Login related
+  bool verifyLogin(const string &id, const string &pw);
+  bool changePassword(const string &oldPw, const string &newPw);
 };
 
-#endif // USER_H
+#endif

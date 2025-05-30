@@ -1,9 +1,9 @@
 #include "consoleview.h"
 #include "customermanager.h"
 #include "filehandler.h"
-#include "mainmenu.h"
+#include "logincontroller.h"
 #include "playsmanager.h"
-#include "reservedmanager.h"
+
 #include "shoppingcartmanager.h"
 #include <chrono>
 #include <iomanip>
@@ -14,13 +14,12 @@
 
 using namespace std;
 
-ConsoleView::ConsoleView() {}
-ConsoleView::~ConsoleView() {}
+ConsoleView::ConsoleView() { loginManager = new LoginAccountManager(); }
 
-// mainmenu could be changed to the login menu
+ConsoleView::~ConsoleView() { delete loginManager; }
+
 bool ConsoleView::displayMainMenu() {
   int ch;
-  MainMenu mainMenu;
   cout << "\033[2J\033[1;1H";
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|                Main Menu                  |" << endl;
@@ -36,10 +35,10 @@ bool ConsoleView::displayMainMenu() {
   cin >> ch;
   switch (ch) {
   case 1:
-    mainMenu.signIn();
+    displayLogin();
     break;
   case 2:
-    mainMenu.signUp();
+    displayAccountRegisterMenu();
     break;
   case 9:
     this->displayMainMenu();
@@ -49,6 +48,7 @@ bool ConsoleView::displayMainMenu() {
   }
   return true;
 }
+
 // nullptr is for the future implementation
 bool ConsoleView::displayCartMenu() {
   int ch;
@@ -60,12 +60,11 @@ bool ConsoleView::displayCartMenu() {
   cout << "|                                           |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|1. Add Cart                                |" << endl;
-  cout << "|2. Cancel Cart                             |" << endl;
-  cout << "|3. Remove Cart                             |" << endl;
-  cout << "|4. Modify Cart                             |" << endl;
-  cout << "|5. View My Cart                            |" << endl;
-  cout << "|6. Search Cart                             |" << endl;
-  cout << "|7. Pay Cart                                |" << endl;
+  cout << "|2. Remove Cart                             |" << endl;
+  cout << "|3. Modify Cart                             |" << endl;
+  cout << "|4. View My Cart                            |" << endl;
+  cout << "|5. Search Cart                             |" << endl;
+  cout << "|6. Pay Cart                                |" << endl;
   cout << "|                                           |" << endl;
   cout << "|9. Back to Default Menu                    |" << endl;
   cout << "|0. Quit this program                       |" << endl;
@@ -76,22 +75,18 @@ bool ConsoleView::displayCartMenu() {
     shoppingCartManager.addCart();
     break;
   case 2:
-    shoppingCartManager.cancelCart(customerId);
-    break;
-  case 3:
     shoppingCartManager.removeCart(customerId);
     break;
-  case 4:
+  case 3:
     shoppingCartManager.modifyCart(customerId);
     break;
-  case 5:
-    // 임시로 null을 전달하고, 나중에 실제 장바구니를 구현해야 함
+  case 4:
     shoppingCartManager.viewCart(nullptr);
     break;
-  case 6:
+  case 5:
     shoppingCartManager.searchCart(customerId);
     break;
-  case 7:
+  case 6:
     shoppingCartManager.pay(nullptr);
     break;
   case 9:
@@ -202,7 +197,9 @@ bool ConsoleView::displayPlaysMenu() {
 // nullptr is for the future implementation
 bool ConsoleView::displayReservedMenu() {
   int ch;
-  int reservedId;
+  Reserved reserved;
+  int reservedId = reserved.getReservedId();
+  int customerId = 0; // 임시로 0으로 설정
   ReservedManager reservedManager;
   cout << "\033[2J\033[1;1H";
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
@@ -210,10 +207,10 @@ bool ConsoleView::displayReservedMenu() {
   cout << "|                                           |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|1. Add Reserved                            |" << endl;
-  cout << "|2. Remove Reserved                         |" << endl;
+  cout << "|2. Cancel Reserved                         |" << endl;
   cout << "|3. Modify Reserved                         |" << endl;
   cout << "|4. Search Reserved Info                    |" << endl;
-  cout << "|5. View Reserved List                      |" << endl;
+  cout << "|5. View My Reserved                        |" << endl;
   cout << "|                                           |" << endl;
   cout << "|                                           |" << endl;
   cout << "|9. Back to Default Menu                    |" << endl;
@@ -222,19 +219,19 @@ bool ConsoleView::displayReservedMenu() {
   cin >> ch;
   switch (ch) {
   case 1:
-    reservedManager.addReserved();
+    reservedManager.addReserved(customerId, 0, 1, 0.0f); // 임시 값으로 설정
     break;
   case 2:
-    reservedManager.removeReserved(reservedId, nullptr);
+    reservedManager.cancelReserved(reservedId);
     break;
   case 3:
-    reservedManager.modifyReserved(reservedId, nullptr);
+    reservedManager.modifyReserved(reservedId, vector<int>{}); // 빈 좌석 목록
     break;
   case 4:
     reservedManager.searchReserved(reservedId);
     break;
   case 5:
-    reservedManager.viewReserved();
+    reservedManager.viewMyReserved(customerId);
     break;
   case 9:
     this->displayMainMenu();
@@ -300,48 +297,71 @@ bool ConsoleView::displayAdminMenu() {
 }
 
 bool ConsoleView::displayAccountRegisterMenu() {
-  int ch;
-  CustomerManager customerManager;
   cout << "\033[2J\033[1;1H";
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|           Account Register Menu           |" << endl;
   cout << "|                                           |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "|                                           |" << endl;
-  cout << "| - Type your personal information          |" << endl;
-  cout << "|   to register new account                 |" << endl;
-  cout << "|   when the text printed                   |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "| - Or type the number 9 and 0              |" << endl;
-  cout << "|   to move to the other menu               |" << endl;
-  cout << "|   or exit this program                    |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "|9. Back to previous Menu                   |" << endl;
-  cout << "|0. Quit this program                       |" << endl;
-  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cin >> ch;
-  switch (ch) {
-  default:
-    this->displayAccountRegisterMenu();
-    cin.ignore();
-    getchar();
-    customerManager.addCustomer();
-    break;
-  case 9:
-    this->displayMainMenu();
-    break;
-  case 0:
-    return false;
+
+  string id, password, userType = "customer";
+  cout << "| ID를 입력하세요: ";
+  cin >> id;
+  cout << "| 비밀번호를 입력하세요: ";
+  cin >> password;
+
+  if (loginManager->createAccount(id, password, userType)) {
+    cout << "| 계정이 성공적으로 생성되었습니다.          |" << endl;
+    cout << "| 로그인 화면으로 이동합니다.               |" << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    return displayLogin();
+  } else {
+    cout << "| 계정 생성에 실패했습니다.                 |" << endl;
+    cout << "| 메인 메뉴로 돌아갑니다.                  |" << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    return displayMainMenu();
   }
-  return true;
 }
 
-bool ConsoleView::displayInnerUserMenu() {
+bool ConsoleView::displayLogin() {
+  string id, password;
+  cout << "\033[2J\033[1;1H";
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "|                Login                      |" << endl;
+  cout << "|                                           |" << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "| ID: ";
+  cin >> id;
+  cout << "| Password: ";
+  cin >> password;
+
+  if (loginManager->isAccountLocked(id)) {
+    cout << "| 계정이 잠겼습니다. 관리자에게 문의하세요.    |" << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    return displayMainMenu();
+  }
+
+  User *user = loginManager->verifyLogin(id, password);
+  if (user) {
+    cout << "| 로그인 성공!                             |" << endl;
+    this_thread::sleep_for(chrono::seconds(1));
+
+    if (user->getUserType() == "admin") {
+      return displayAdminMenu();
+    } else {
+      return displayUserDashboard();
+    }
+  }
+
+  cout << "| 로그인 실패                               |" << endl;
+  this_thread::sleep_for(chrono::seconds(2));
+  return displayMainMenu();
+}
+
+bool ConsoleView::displayUserDashboard() {
   int ch;
   cout << "\033[2J\033[1;1H";
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "|                User Menu                  |" << endl;
+  cout << "|              User Dashboard               |" << endl;
   cout << "|                                           |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "|1. Goto Cart Menu                          |" << endl;
@@ -350,20 +370,12 @@ bool ConsoleView::displayInnerUserMenu() {
   cout << "|4. Goto Reserved Menu                      |" << endl;
   cout << "|5. Logout                                  |" << endl;
   cout << "|                                           |" << endl;
-  cout << "|                                           |" << endl;
   cout << "|0. Quit this program                       |" << endl;
   cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cin >> ch;
   switch (ch) {
-  default:
-    this->displayInnerUserMenu();
-    cin.ignore();
-    getchar();
-    break;
   case 1:
     displayCartMenu();
-    cin.ignore();
-    getchar();
     break;
   case 2:
     displayCustomerMenu();
@@ -379,65 +391,9 @@ bool ConsoleView::displayInnerUserMenu() {
     break;
   case 0:
     return false;
-  }
-  return true;
-}
-
-bool ConsoleView::displayOuterUserMenu() {
-  User user;
-  string id;
-  string password;
-  string userResponse;
-  cout << "\033[2J\033[1;1H";
-  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "|                User Menu                  |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "|                                           |" << endl;
-  cout << "| - Enter your Id and Password to sign in   |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "|                                           |" << endl;
-  cout << "|9. Back to Default Menu                    |" << endl;
-  cout << "|0. Quit this program                       |" << endl;
-  cout << "+++++++++++++++++++++++++++++++++++++++++++++" << endl;
-  cout << "| ID :                                      |" << endl;
-  cin >> id;
-  cout << "| Entered Your ID : " << id << setw(22 - id.length()) << "|" << endl;
-  cout << "| Password :                                |" << endl;
-  cin >> password;
-  cout << "| Entered Your Password : " << password
-       << setw(22 - password.length()) << "|" << endl;
-  if (user.verifyLogin(id, password)) {
-    cout << "| Sign in successfully!                     |" << endl;
-    cout << "|                                           |" << endl;
-    cout << "|                                           |" << endl;
-    cout << "| a few seconds to move next Menu           |" << endl;
-
-    do {
-      // Countdown loop from 3 to 1
-      for (int i = 3; i > 0; --i) {
-        // Printing the remaining seconds
-        cout << "\033[2J\033[1;1H";
-        cout << "| " << i << " seconds remaining" << setw(27) << "|" << endl;
-        // Waiting for 1 second
-        this_thread::sleep_for(chrono::seconds(1));
-      }
-      // Printing the final message
-      cout << "\033[2J\033[1;1H";
-      cout << "Press any key to move next Menu" << endl;
-      cin >> userResponse;
-    } while (userResponse.empty());
-    this->displayInnerUserMenu();
-  }
-
-  else {
-    cout << "| Wrong ID or Password                      |" << endl;
-    cout << "| Please try again                          |" << endl;
-    cout << "|                                           |" << endl;
-    cout << "|                                           |" << endl;
-    cout << "|                                           |" << endl;
-    cout << "|                                           |" << endl;
-    this->displayOuterUserMenu();
+  default:
+    displayUserDashboard();
+    break;
   }
   return true;
 }
@@ -573,7 +529,8 @@ void ConsoleView::displayPlaysInfo(const vector<Plays *> &playsList,
   for (int i = startIdx; i < endIdx; i++) {
     Plays *play = playsList[i];
     cout << "|-------------------------------------------|" << endl;
-    cout << "| Play ID: " << setw(33) << left << play->getId() << "|" << endl;
+    cout << "| Play ID: " << setw(33) << left << play->getPlaysId() << "|"
+         << endl;
     cout << "| Name: " << setw(35) << left << play->getName() << "|" << endl;
     cout << "| Location: " << setw(32) << left << play->getLocation() << "|"
          << endl;

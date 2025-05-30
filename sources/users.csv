@@ -1,0 +1,6 @@
+LoginId,Password,UserType,
+a01,encrypted_a01,customer,
+a02,encrypted_a02,customer,
+c001,encrypted_c001,customer,
+c002,encrypted_c002,customer,
+newAccount,encrypted_newAccount,customer,

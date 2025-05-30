@@ -2,6 +2,7 @@
 #define CONSOLEVIEW_H
 
 #include "customer.h"
+#include "loginaccountmanager.h"
 #include "plays.h"
 #include "reserved.h"
 #include "shoppingcart.h"
@@ -9,22 +10,25 @@
 #include <vector>
 
 class ConsoleView {
+private:
+  LoginAccountManager *loginManager;
+
 public:
   ConsoleView();
   ~ConsoleView();
-  bool displayAdminMenu();
-  void displayAdminInfo();
-  bool displayAccountRegisterMenu();
+  bool displayMainMenu();
   bool displayCartMenu();
   void displayCartInfo(ShoppingCart *);
   bool displayCustomerMenu();
   void displayCustomerInfo(Customer *);
-  bool displayMainMenu();
   bool displayPlaysMenu();
   void displayPlaysInfo(const vector<Plays *> &playsList, int currentPage = 1);
   bool displayReservedMenu();
   void displayReservedInfo(Reserved *);
-  bool displayOuterUserMenu();
-  bool displayInnerUserMenu();
+  bool displayAdminMenu();
+  void displayAdminInfo();
+  bool displayAccountRegisterMenu();
+  bool displayLogin();
+  bool displayUserDashboard();
 };
 #endif // CONSOLEVIEW_H
