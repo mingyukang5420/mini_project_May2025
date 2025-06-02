@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-
 class TicketManager {
 public:
   TicketManager(CustomerManager &a_customerManager, PlayManager &a_playManager);

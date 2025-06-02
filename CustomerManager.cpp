@@ -7,7 +7,6 @@
 #include <limits>  // For std::numeric_limits
 #include <sstream> // For std::stringstream
 
-
 CustomerManager::CustomerManager() { loadCustomersFromFile(); }
 
 CustomerManager::~CustomerManager() {

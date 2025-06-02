@@ -8,7 +8,6 @@
 #include <limits>
 #include <sstream>
 
-
 TicketManager::TicketManager(CustomerManager &a_customerManager,
                              PlayManager &a_playManager)
     : m_customerManager(a_customerManager), m_playManager(a_playManager) {

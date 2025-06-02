@@ -5,7 +5,6 @@
 #include <ctime> // For time_t
 #include <string>
 
-
 class Ticket {
 public:
   Ticket(int a_ticketId = 0, int a_customerId = 0, int a_playsId = 0,

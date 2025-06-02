@@ -5,7 +5,6 @@
 #include <ctime> // For time_t
 #include <string>
 
-
 class Play {
 public:
   Play(int a_id = 0, std::string a_name = "", time_t a_showingDate = 0,
