@@ -5,10 +5,10 @@
 #include <random>
 #include <sstream>
 
-CustomerManager::CustomerManager() { loadFromFile("customer.csv"); }
+CustomerManager::CustomerManager() { loadFromFile("./sources/customer.csv"); }
 
 CustomerManager::~CustomerManager() {
-  saveToFile("customer.csv");
+  saveToFile("./sources/customer.csv");
   for (auto &pair : m_customerList) {
     delete pair.second;
   }
@@ -32,7 +32,7 @@ bool CustomerManager::remove(const std::string &id) {
   if (it != m_customerList.end()) {
     delete it->second;
     m_customerList.erase(it);
-    saveToFile("customer.csv");
+    saveToFile("./sources/customer.csv");
     DisplayConsoleView::showMessage("Customer ID " + id + " has been deleted.");
     return true;
   }
