@@ -1,27 +1,37 @@
 // FileHandler.h
-#ifndef __FILE_HANDLER_H__
-#define __FILE_HANDLER_H__
-
+#pragma once
 #include <fstream>
-#include <iostream>
-#include <sstream> // For std::stringstream
 #include <string>
 #include <vector>
 
 class FileHandler {
 public:
-  // CSV 파일에서 한 줄을 읽어 문자열 벡터로 파싱하는 정적 메서드
-  static std::vector<std::string> readCsvLine(std::istream &a_fileStream,
-                                              char a_delimiter = ',');
+  std::vector<std::string> readLines(const std::string &filename) const {
+    std::vector<std::string> lines;
+    std::ifstream file(filename);
+    std::string line;
 
-  // CSV 파일에 한 줄을 쓰는 정적 메서드
-  static void writeCsvLine(std::ostream &a_fileStream,
-                           const std::vector<std::string> &a_data,
-                           char a_delimiter = ',');
+    if (file.is_open()) {
+      while (std::getline(file, line)) {
+        if (!line.empty()) {
+          lines.push_back(line);
+        }
+      }
+      file.close();
+    }
 
-private:
-  FileHandler() = delete; // 정적 클래스로서 인스턴스화를 막음
-  ~FileHandler() = delete;
+    return lines;
+  }
+
+  void writeLines(const std::string &filename,
+                  const std::vector<std::string> &lines) const {
+    std::ofstream file(filename);
+
+    if (file.is_open()) {
+      for (const auto &line : lines) {
+        file << line << '\n';
+      }
+      file.close();
+    }
+  }
 };
-
-#endif // __FILE_HANDLER_H__

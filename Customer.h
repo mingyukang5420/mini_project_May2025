@@ -1,28 +1,26 @@
 // Customer.h
-#ifndef __CUSTOMER_H__
-#define __CUSTOMER_H__
-
+#pragma once
 #include <string>
 
 class Customer {
 public:
-  Customer(int a_id = 0, std::string a_name = "",
-           std::string a_phoneNumber = "", std::string a_address = "");
+  Customer(const std::string &name = "", const std::string &phone = "")
+      : m_id(""), m_name(name), m_phone(phone) {}
 
-  int getCustomerId() const;
-  std::string getCustomerName() const;
-  std::string getPhoneNumber() const;
-  std::string getAddress() const;
+  Customer(const std::string &id, const std::string &name,
+           const std::string &phone)
+      : m_id(id), m_name(name), m_phone(phone) {}
 
-  void setCustomerName(const std::string &a_name);
-  void setPhoneNumber(const std::string &a_phoneNumber);
-  void setAddress(const std::string &a_address);
+  const std::string &getId() const { return m_id; }
+  const std::string &getName() const { return m_name; }
+  const std::string &getPhone() const { return m_phone; }
+
+  void setId(const std::string &id) { m_id = id; }
+  void setName(const std::string &name) { m_name = name; }
+  void setPhone(const std::string &phone) { m_phone = phone; }
 
 private:
-  int m_customerId;
-  std::string m_customerName;
-  std::string m_phoneNumber;
-  std::string m_address;
+  std::string m_id;
+  std::string m_name;
+  std::string m_phone;
 };
-
-#endif // __CUSTOMER_H__

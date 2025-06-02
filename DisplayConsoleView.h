@@ -1,55 +1,38 @@
 // DisplayConsoleView.h
-#ifndef __DISPLAY_CONSOLE_VIEW_H__
-#define __DISPLAY_CONSOLE_VIEW_H__
+#pragma once
 
-#include <iomanip> // For std::setw, std::setfill, std::left, std::right
-#include <iostream>
 #include <string>
 #include <vector>
 
-// Forward declarations to avoid circular includes
+// Forward declarations
 class Customer;
-class Play;
+class Plays;
 class Ticket;
 
 class DisplayConsoleView {
 public:
-  // 메인 메뉴를 출력합니다.
-  static void displayMainMenu();
-  // 고객 관리 메뉴를 출력합니다.
-  static void displayCustomerMenu();
-  // 연극 관리 메뉴를 출력합니다.
-  static void displayPlaysMenu();
-  // 티켓 관리 메뉴를 출력합니다.
-  static void displayTicketMenu();
+  // Menu display functions
+  static void showMainMenu();
+  static void showCustomerMenu();
+  static void showPlaysMenu();
+  static void showTicketMenu();
 
-  // 고객 목록을 출력합니다.
-  static void displayCustomers(const std::vector<Customer> &a_customerList);
-  // 특정 고객 정보를 출력합니다.
-  static void displayCustomer(const Customer *a_customer);
+  // List display functions
+  static void displayCustomerList(const std::vector<std::string> &customers);
+  static void displayPlaysList(const std::vector<std::string> &plays);
+  static void displayTicketList(const std::vector<std::string> &tickets);
 
-  // 연극 목록을 출력합니다.
-  static void displayPlays(const std::vector<Play> &a_playList);
-  // 특정 연극 정보를 출력합니다.
-  static void displayPlay(const Play *a_play);
+  // Single item display functions
+  static void displayCustomer(const Customer *customer);
+  static void displayPlay(const Plays *play);
+  static void displayTicket(const Ticket *ticket);
 
-  // 티켓 목록을 출력합니다.
-  static void displayTickets(const std::vector<Ticket> &a_ticketList);
-  // 특정 티켓 정보를 출력합니다.
-  static void displayTicket(const Ticket *a_ticket);
-
-  // 사용자에게 메시지를 출력합니다.
-  static void showMessage(const std::string &a_message);
-  // 사용자에게 에러 메시지를 출력합니다.
-  static void showErrorMessage(const std::string &a_errorMessage);
-  // 사용자 입력을 기다립니다.
-  static void pressEnterToContinue();
-  // 화면을 지웁니다.
+  // Utility functions
+  static void showMessage(const std::string &message);
+  static void showErrorMessage(const std::string &message);
   static void clearScreen();
+  static void pressEnterToContinue();
 
-private:
-  DisplayConsoleView() = delete; // 정적 클래스로서 인스턴스화를 막음
-  ~DisplayConsoleView() = delete;
+  static std::string getInput(const std::string &prompt);
+  static int getIntInput(const std::string &prompt);
 };
-
-#endif // __DISPLAY_CONSOLE_VIEW_H__

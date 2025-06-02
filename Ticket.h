@@ -1,32 +1,22 @@
 // Ticket.h
-#ifndef __TICKET_H__
-#define __TICKET_H__
-
-#include <ctime> // For time_t
+#pragma once
 #include <string>
 
 class Ticket {
 public:
-  Ticket(int a_ticketId = 0, int a_customerId = 0, int a_playsId = 0,
-         time_t a_reservedDate = 0, int a_quantity = 0);
+  Ticket(const std::string &customerId, const std::string &playId)
+      : m_customerId(customerId), m_playId(playId) {}
 
-  int getTicketId() const;
-  int getCustomerId() const;
-  int getPlaysId() const;
-  time_t getReservedDate() const;
-  int getQuantity() const;
+  const std::string &getCustomerId() const { return m_customerId; }
+  const std::string &getPlayId() const { return m_playId; }
+  const std::string &getId() const { return m_customerId; }
 
-  void setCustomerId(int a_customerId);
-  void setPlaysId(int a_playsId);
-  void setReservedDate(time_t a_reservedDate);
-  void setQuantity(int a_quantity);
+  void setCustomerId(const std::string &customerId) {
+    m_customerId = customerId;
+  }
+  void setPlayId(const std::string &playId) { m_playId = playId; }
 
 private:
-  int m_ticketId;
-  int m_customerId;
-  int m_playsId;
-  time_t m_reservedDate; // YYYY-MM-DD 형식으로 관리 (저장 시 변환)
-  int m_quantity;
+  std::string m_customerId;
+  std::string m_playId;
 };
-
-#endif // __TICKET_H__

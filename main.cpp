@@ -1,168 +1,225 @@
 // main.cpp
 #include "CustomerManager.h"
 #include "DisplayConsoleView.h"
-#include "PlayManager.h"
+#include "PlaysManager.h"
 #include "TicketManager.h"
 #include <iostream>
-#include <limits> // For std::numeric_limits
+#include <limits>
 
-// using namespace std; // 전역으로 사용하도록 주석 해제
+using namespace std;
 
-// 메뉴 선택을 위한 사용자 입력 함수
-int getMenuChoice() {
-  int choice;
-  while (!(std::cin >> choice)) {
+// Function for user input to select menu
+int getMenuChoice() { // get the menu choice from the user
+  int choice;         // the choice of the user
+  while (!(cin >>
+           choice)) { // if the input is not a number, show the error message
     DisplayConsoleView::showErrorMessage(
-        "유효하지 않은 입력입니다. 숫자를 입력해주세요.");
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cout << "선택: ";
+        "Invalid input. Please enter a number.");
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Select: "; // show the select message
   }
-  return choice;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  return choice; // return the choice
 }
 
-int main() {
+class TheaterSystem {
+private:
   CustomerManager customerManager;
-  PlayManager playManager;
-  TicketManager ticketManager(
-      customerManager,
-      playManager); // TicketManager는 CustomerManager와 PlayManager에 의존
+  PlaysManager playsManager;
+  TicketManager ticketManager;
 
-  int mainChoice = 0;
-  int subChoice = 0;
-  int idToManage = 0;
+public:
+  void run() {
+    while (true) {
+      DisplayConsoleView::showMainMenu();
+      int choice = DisplayConsoleView::getIntInput("");
 
-  while (true) {
-    DisplayConsoleView::displayMainMenu();
-    mainChoice = getMenuChoice();
-
-    switch (mainChoice) {
-    case 1: // 고객 관리
-      while (true) {
-        DisplayConsoleView::displayCustomerMenu();
-        subChoice = getMenuChoice();
-
-        switch (subChoice) {
-        case 1: // 고객 목록 보기
-          DisplayConsoleView::displayCustomers(
-              customerManager.getAllCustomers());
-          break;
-        case 2: // 고객 추가
-          customerManager.inputCustomer();
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 3: // 고객 삭제
-          DisplayConsoleView::displayCustomers(
-              customerManager.getAllCustomers());
-          std::cout << "삭제할 고객 ID 입력: ";
-          idToManage = getMenuChoice();
-          customerManager.deleteCustomer(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 4: // 고객 정보 수정
-          DisplayConsoleView::displayCustomers(
-              customerManager.getAllCustomers());
-          std::cout << "수정할 고객 ID 입력: ";
-          idToManage = getMenuChoice();
-          customerManager.modifyCustomer(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 5:                 // 메인 메뉴로 돌아가기
-          goto endCustomerLoop; // 다중 루프 탈출
-        default:
-          DisplayConsoleView::showErrorMessage("잘못된 메뉴 선택입니다.");
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        }
+      switch (choice) {
+      case 1:
+        handleCustomerMenu();
+        break;
+      case 2:
+        handlePlaysMenu();
+        break;
+      case 3:
+        handleTicketMenu();
+        break;
+      case 4:
+        return;
+      default:
+        DisplayConsoleView::showErrorMessage("잘못된 선택입니다.");
       }
-    endCustomerLoop:;
-      break;
-
-    case 2: // 연극 관리
-      while (true) {
-        DisplayConsoleView::displayPlaysMenu();
-        subChoice = getMenuChoice();
-
-        switch (subChoice) {
-        case 1: // 연극 목록 보기
-          DisplayConsoleView::displayPlays(playManager.getAllPlays());
-          break;
-        case 2: // 연극 추가
-          playManager.inputPlay();
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 3: // 연극 삭제
-          DisplayConsoleView::displayPlays(playManager.getAllPlays());
-          std::cout << "삭제할 연극 ID 입력: ";
-          idToManage = getMenuChoice();
-          playManager.deletePlay(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 4: // 연극 정보 수정
-          DisplayConsoleView::displayPlays(playManager.getAllPlays());
-          std::cout << "수정할 연극 ID 입력: ";
-          idToManage = getMenuChoice();
-          playManager.modifyPlay(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 5: // 메인 메뉴로 돌아가기
-          goto endPlayLoop;
-        default:
-          DisplayConsoleView::showErrorMessage("잘못된 메뉴 선택입니다.");
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        }
-      }
-    endPlayLoop:;
-      break;
-
-    case 3: // 티켓 관리
-      while (true) {
-        DisplayConsoleView::displayTicketMenu();
-        subChoice = getMenuChoice();
-
-        switch (subChoice) {
-        case 1: // 티켓 목록 보기
-          DisplayConsoleView::displayTickets(ticketManager.getAllTickets());
-          break;
-        case 2: // 티켓 추가
-          ticketManager.inputTicket();
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 3: // 티켓 삭제
-          DisplayConsoleView::displayTickets(ticketManager.getAllTickets());
-          std::cout << "삭제할 티켓 ID 입력: ";
-          idToManage = getMenuChoice();
-          ticketManager.deleteTicket(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 4: // 티켓 정보 수정
-          DisplayConsoleView::displayTickets(ticketManager.getAllTickets());
-          std::cout << "수정할 티켓 ID 입력: ";
-          idToManage = getMenuChoice();
-          ticketManager.modifyTicket(idToManage);
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        case 5: // 메인 메뉴로 돌아가기
-          goto endTicketLoop;
-        default:
-          DisplayConsoleView::showErrorMessage("잘못된 메뉴 선택입니다.");
-          DisplayConsoleView::pressEnterToContinue();
-          break;
-        }
-      }
-    endTicketLoop:;
-      break;
-
-    case 4: // 프로그램 종료
-      DisplayConsoleView::showMessage("프로그램을 종료합니다.");
-      return 0;
-    default:
-      DisplayConsoleView::showErrorMessage("잘못된 메뉴 선택입니다.");
-      DisplayConsoleView::pressEnterToContinue();
-      break;
     }
   }
 
+private:
+  void handleCustomerMenu() {
+    while (true) {
+      DisplayConsoleView::showCustomerMenu();
+      int choice = DisplayConsoleView::getIntInput("");
+
+      switch (choice) {
+      case 1: {
+        std::string name = DisplayConsoleView::getInput("고객 이름: ");
+        std::string phone = DisplayConsoleView::getInput("전화번호: ");
+        customerManager.add(Customer(name, phone));
+        DisplayConsoleView::showMessage("고객이 등록되었습니다.");
+        break;
+      }
+      case 2: {
+        auto customers = customerManager.getAll();
+        std::vector<std::string> customerStrings;
+        for (const auto &customer : customers) {
+          customerStrings.push_back(customer.getId() + " - " +
+                                    customer.getName() + " - " +
+                                    customer.getPhone());
+        }
+        DisplayConsoleView::displayCustomerList(customerStrings);
+        break;
+      }
+      case 3: {
+        std::string id = DisplayConsoleView::getInput("수정할 고객 ID: ");
+        Customer *customer = customerManager.search(id);
+        if (customer) {
+          std::string name = DisplayConsoleView::getInput("새 이름: ");
+          std::string phone = DisplayConsoleView::getInput("새 전화번호: ");
+          customer->setName(name);
+          customer->setPhone(phone);
+          DisplayConsoleView::showMessage("고객 정보가 수정되었습니다.");
+        } else {
+          DisplayConsoleView::showErrorMessage("고객을 찾을 수 없습니다.");
+        }
+        break;
+      }
+      case 4: {
+        std::string id = DisplayConsoleView::getInput("삭제할 고객 ID: ");
+        if (customerManager.remove(id)) {
+          DisplayConsoleView::showMessage("고객이 삭제되었습니다.");
+        } else {
+          DisplayConsoleView::showErrorMessage("고객을 찾을 수 없습니다.");
+        }
+        break;
+      }
+      case 5:
+        return;
+      default:
+        DisplayConsoleView::showErrorMessage("잘못된 선택입니다.");
+      }
+    }
+  }
+
+  void handlePlaysMenu() {
+    while (true) {
+      DisplayConsoleView::showPlaysMenu();
+      int choice = DisplayConsoleView::getIntInput("");
+
+      switch (choice) {
+      case 1: {
+        std::string title = DisplayConsoleView::getInput("공연 제목: ");
+        std::string date = DisplayConsoleView::getInput("공연 날짜: ");
+        playsManager.add(Plays(title, date));
+        DisplayConsoleView::showMessage("공연이 등록되었습니다.");
+        break;
+      }
+      case 2: {
+        auto plays = playsManager.getAll();
+        std::vector<std::string> playStrings;
+        for (const auto &play : plays) {
+          playStrings.push_back(play.getId() + " - " + play.getTitle() + " - " +
+                                play.getDate());
+        }
+        DisplayConsoleView::displayPlaysList(playStrings);
+        break;
+      }
+      case 3: {
+        std::string id = DisplayConsoleView::getInput("수정할 공연 ID: ");
+        Plays *play = playsManager.search(id);
+        if (play) {
+          std::string title = DisplayConsoleView::getInput("새 제목: ");
+          std::string date = DisplayConsoleView::getInput("새 날짜: ");
+          play->setTitle(title);
+          play->setDate(date);
+          DisplayConsoleView::showMessage("공연 정보가 수정되었습니다.");
+        } else {
+          DisplayConsoleView::showErrorMessage("공연을 찾을 수 없습니다.");
+        }
+        break;
+      }
+      case 4: {
+        std::string id = DisplayConsoleView::getInput("삭제할 공연 ID: ");
+        if (playsManager.remove(id)) {
+          DisplayConsoleView::showMessage("공연이 삭제되었습니다.");
+        } else {
+          DisplayConsoleView::showErrorMessage("공연을 찾을 수 없습니다.");
+        }
+        break;
+      }
+      case 5:
+        return;
+      default:
+        DisplayConsoleView::showErrorMessage("잘못된 선택입니다.");
+      }
+    }
+  }
+
+  void handleTicketMenu() {
+    while (true) {
+      DisplayConsoleView::showTicketMenu();
+      int choice = DisplayConsoleView::getIntInput("");
+
+      switch (choice) {
+      case 1: {
+        std::string customerId = DisplayConsoleView::getInput("고객 ID: ");
+        std::string playId = DisplayConsoleView::getInput("공연 ID: ");
+        if (customerManager.search(customerId) && playsManager.search(playId)) {
+          if (ticketManager.add(customerId, playId)) {
+            DisplayConsoleView::showMessage("예매가 완료되었습니다.");
+          } else {
+            DisplayConsoleView::showErrorMessage("예매에 실패했습니다.");
+          }
+        } else {
+          DisplayConsoleView::showErrorMessage(
+              "잘못된 고객 ID 또는 공연 ID입니다.");
+        }
+        break;
+      }
+      case 2: {
+        std::string customerId = DisplayConsoleView::getInput("고객 ID: ");
+        auto tickets = ticketManager.getCustomerTickets(customerId);
+        std::vector<std::string> ticketStrings;
+        for (const auto &ticket : tickets) {
+          Plays *play = playsManager.search(ticket.getPlayId());
+          if (play) {
+            ticketStrings.push_back("고객 ID: " + ticket.getCustomerId() +
+                                    " - 공연: " + play->getTitle() +
+                                    " - 날짜: " + play->getDate());
+          }
+        }
+        DisplayConsoleView::displayTicketList(ticketStrings);
+        break;
+      }
+      case 3: {
+        std::string customerId = DisplayConsoleView::getInput("고객 ID: ");
+        std::string playId = DisplayConsoleView::getInput("공연 ID: ");
+        if (ticketManager.remove(customerId, playId)) {
+          DisplayConsoleView::showMessage("예매가 취소되었습니다.");
+        } else {
+          DisplayConsoleView::showErrorMessage("예매 정보를 찾을 수 없습니다.");
+        }
+        break;
+      }
+      case 4:
+        return;
+      default:
+        DisplayConsoleView::showErrorMessage("잘못된 선택입니다.");
+      }
+    }
+  }
+};
+
+int main() {
+  TheaterSystem system;
+  system.run();
   return 0;
 }
