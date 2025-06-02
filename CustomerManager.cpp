@@ -2,10 +2,8 @@
 #include "CustomerManager.h"
 #include "DisplayConsoleView.h" // For displaying messages and input
 #include "FileHandler.h"
-#include <algorithm> // For std::max
 #include <fstream>
-#include <limits>  // For std::numeric_limits
-#include <sstream> // For std::stringstream
+#include <limits> // For std::numeric_limits
 
 CustomerManager::CustomerManager() { loadCustomersFromFile(); }
 

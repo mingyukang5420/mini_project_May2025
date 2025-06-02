@@ -2,7 +2,6 @@
 #include "TicketManager.h"
 #include "DisplayConsoleView.h"
 #include "FileHandler.h"
-#include <algorithm>
 #include <fstream>
 #include <iomanip> // For std::put_time, std::get_time
 #include <limits>

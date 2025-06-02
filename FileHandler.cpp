@@ -1,6 +1,5 @@
 // FileHandler.cpp
 #include "FileHandler.h"
-#include <algorithm> // For std::remove_if
 
 std::vector<std::string> FileHandler::readCsvLine(std::istream &a_fileStream,
                                                   char a_delimiter) {
